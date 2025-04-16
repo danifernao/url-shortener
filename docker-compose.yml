@@ -45,7 +45,7 @@ services:
     ports:
       - 8002:80
     labels:
-      - "traefik.http.routers.backend.rule=(Host(`localhost`) && (PathPrefix(`/api`) || PathPrefix(`/resources`) || PathRegexp(`^/[a-zA-Z0-9]+$`)))"
+      - "traefik.http.routers.backend.rule=(Host(`localhost`) && (PathPrefix(`/api`) || PathRegexp(`^/[a-zA-Z0-9]+$`)))"
     depends_on:
       - database
       - traefik
