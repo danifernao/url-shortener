@@ -3,7 +3,7 @@
 
   if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $alias = isset($_GET['alias']) ? $_GET['alias'] : NULL;
-    if (preg_match('/^[a-zA-Z0-9]{1,8}$/', $alias)) {
+    if ($alias && preg_match('/^[a-zA-Z0-9]{1,8}$/', $alias)) {
       $db = new Database();
       $conn = $db->getConnection();
       $stmt = $conn->prepare('SELECT original_url FROM short_urls WHERE alias = :alias LIMIT 1');
