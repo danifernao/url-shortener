@@ -24,6 +24,7 @@ services:
       - 8001:5173
     labels:
       - "traefik.http.routers.frontend.rule=Host(`localhost`)"
+      - "traefik.http.services.frontend.loadbalancer.server.port=5173"
     depends_on:
       - backend
       - traefik
@@ -46,6 +47,7 @@ services:
       - 8002:80
     labels:
       - "traefik.http.routers.backend.rule=(Host(`localhost`) && (PathPrefix(`/api`) || PathRegexp(`^/[a-zA-Z0-9]+$`)))"
+      - "traefik.http.services.backend.loadbalancer.server.port=80"
     depends_on:
       - database
       - traefik
