@@ -23,9 +23,7 @@ function Form() {
     useState<boolean>(false);
   const reCaptchaSiteKey: string = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 
-  const submitForm = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ): void => {
+  const submitForm = (event: React.MouseEvent<HTMLButtonElement>): void => {
     const apiUrl = "http://localhost/api/";
     const formData = new FormData(formRef.current!);
 
@@ -81,9 +79,7 @@ function Form() {
     event.preventDefault();
   };
 
-  const resetForm = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ): void => {
+  const resetForm = (event: React.MouseEvent<HTMLButtonElement>): void => {
     formRef.current!.url.value = "";
     setApiResp({ hasErrors: false, shortUrl: null, message: null });
     setShouldRenderCaptcha(true);
@@ -106,9 +102,7 @@ function Form() {
     }
   }, [shouldRenderCaptcha]);
 
-  const copyThis = async (
-    event: React.MouseEvent<HTMLInputElement, MouseEvent>
-  ) => {
+  const copyThis = async (event: React.MouseEvent<HTMLInputElement>) => {
     const inputElem = event.currentTarget;
     try {
       inputElem.select();
