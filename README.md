@@ -4,7 +4,7 @@ Aplicación web para el acortamiento de enlaces, inspirada en TinyURL. Desarroll
 
 ![Captura de pantalla de la aplicación web](/screenshot.png)
 
-### Instalación y configuración
+## Instalación y configuración
 
 1. Asegúrate de tener instalado Docker y su servicio en ejecución.
 2. Descarga o clona este repositorio e ingresa a él.
