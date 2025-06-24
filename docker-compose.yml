@@ -1,0 +1,71 @@
+services:
+  traefik:
+    image: traefik:v3
+    command: --api.insecure=true --providers.docker
+    ports:
+      - 80:80
+      - 8080:8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  frontend:
+    build:
+      context: ./frontend
+    environment:
+      VITE_RECAPTCHA_SITE_KEY: ${RECAPTCHA_SITE_KEY}
+    develop:
+      watch:
+        - action: sync
+          path: ./frontend
+          target: /frontend
+          ignore:
+            - node_modules
+    ports:
+      - 8001:5173
+    labels:
+      - "traefik.http.routers.frontend.rule=Host(`localhost`)"
+      - "traefik.http.services.frontend.loadbalancer.server.port=5173"
+    depends_on:
+      - backend
+      - traefik
+
+  backend:
+    build:
+      context: ./backend
+    environment:
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      RECAPTCHA_SECRETE_KEY: ${RECAPTCHA_SECRETE_KEY}
+    develop:
+      watch:
+        - action: sync
+          path: ./backend
+          target: /var/www/html
+    ports:
+      - 8002:80
+    labels:
+      - "traefik.http.routers.backend.rule=(Host(`localhost`) && (PathPrefix(`/api`) || PathRegexp(`^/[a-zA-Z0-9]+$`)))"
+      - "traefik.http.services.backend.loadbalancer.server.port=80"
+    depends_on:
+      - database
+      - traefik
+
+  database:
+    image: mysql:9.2
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - ./backend/database/migrations:/docker-entrypoint-initdb.d
+
+  phpmyadmin:
+    image: phpmyadmin
+    ports:
+      - 8003:80
+    environment:
+      - PMA_HOST=database
+      - PMA_port=3306
