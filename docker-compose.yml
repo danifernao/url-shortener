@@ -7,7 +7,6 @@ services:
       - 8080:8080
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-
   frontend:
     build:
       context: ./frontend
@@ -20,6 +19,8 @@ services:
           target: /frontend
           ignore:
             - node_modules
+        - action: rebuild
+          path: package.json
     ports:
       - 8001:5173
     labels:
@@ -28,15 +29,14 @@ services:
     depends_on:
       - backend
       - traefik
-
   backend:
     build:
       context: ./backend
     environment:
-      MYSQL_HOST: ${MYSQL_HOST}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      DB_HOST: ${DB_HOST}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
       RECAPTCHA_SECRETE_KEY: ${RECAPTCHA_SECRETE_KEY}
     develop:
       watch:
@@ -51,17 +51,16 @@ services:
     depends_on:
       - database
       - traefik
-
   database:
     image: mysql:9.2
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+      MYSQL_DATABASE: ${DB_DATABASE}
     volumes:
+      - mysql_data:/var/lib/mysql
       - ./backend/database/migrations:/docker-entrypoint-initdb.d
-
   phpmyadmin:
     image: phpmyadmin
     ports:
@@ -69,3 +68,5 @@ services:
     environment:
       - PMA_HOST=database
       - PMA_port=3306
+volumes:
+  mysql_data:

@@ -6,10 +6,10 @@
     private $pass;
 
     public function __construct() {
-      $this->host = getenv('MYSQL_HOST');
-      $this->name = getenv('MYSQL_DATABASE');
-      $this->user = getenv('MYSQL_USER');
-      $this->pass = getenv('MYSQL_PASSWORD');
+      $this->host = getenv('DB_HOST');
+      $this->name = getenv('DB_DATABASE');
+      $this->user = getenv('DB_USERNAME');
+      $this->pass = getenv('DB_PASSWORD');
     }
 
     public function getConnection() {
