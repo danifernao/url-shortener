@@ -23,3 +23,7 @@ docker compose up --watch --build
 ```
 
 6. Abre `http://localhost/` en tu navegador para ver el proyecto.
+
+## Consideraciones
+
+- Las URL acortadas distinguen entre mayúsculas y minúsculas.
